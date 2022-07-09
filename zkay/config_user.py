@@ -60,7 +60,7 @@ class UserConfig:
         self._blockchain_backend_values = ['w3-eth-tester', 'w3-ganache', 'w3-ipc', 'w3-websocket', 'w3-http', 'w3-custom']
 
         self._blockchain_node_uri: Union[Any, str, None] = 'http://localhost:7545'
-        self._blockchain_pki_address: str = ''
+        self._blockchain_pki_addresses: str = ''
         self._blockchain_crypto_lib_addresses: str = ''
         self._blockchain_default_account: Union[int, str, None] = 0
 
@@ -186,19 +186,21 @@ class UserConfig:
         self._blockchain_node_uri = val
 
     @property
-    def blockchain_pki_address(self) -> str:
+    def blockchain_pki_addresses(self) -> str:
         """
-        Address of the deployed pki contract.
+        Addresses of the deployed pki contracts.
 
         Must be specified for backends other than w3-eth-tester.
-        This library can be deployed using ``zkay deploy-pki``.
+        Scheme: main_crypto_backend=address,addhom_crypto_backend=address
+        Example: ecdh-chaskey=0x5B80EF67dea414066Af73706c79E94388636ACAc,elgamal=0x6a9285214BaA0d2B4CCE150Ec31a3123447D9Dc2
+        The libraries can be deployed using ``zkay deploy-pki``.
         """
-        return self._blockchain_pki_address
+        return self._blockchain_pki_addresses
 
-    @blockchain_pki_address.setter
-    def blockchain_pki_address(self, val: str):
+    @blockchain_pki_addresses.setter
+    def blockchain_pki_addresses(self, val: str):
         _type_check(val, str)
-        self._blockchain_pki_address = val
+        self._blockchain_pki_addresses = val
 
     @property
     def blockchain_crypto_lib_addresses(self) -> str:
@@ -223,7 +225,7 @@ class UserConfig:
         """
         Address of the wallet which should be made available under the name 'me' in contract.py.
 
-        If None -> must always specify a sender, empty blockchain_pki_address is invalid
+        If None -> must always specify a sender, empty blockchain_pki_addresses is invalid
         If int -> use eth.accounts[int]
         If str -> use address str
         """

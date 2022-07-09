@@ -235,7 +235,7 @@ Once the contracts are deployed, you can tell zkay to use those contract address
     {
         "blockchain_backend":"w3-ganache",
         "blockchain_node_uri":"http://{ganache_ip}:{ganache_port}",
-        "blockchain_pki_address": "<Ethereum address of the PKI contract>",
+        "blockchain_pki_addresses": "ecdh-chaskey=<Ethereum address of the PKI contract>",
         "blockchain_crypto_lib_addresses": "<blank_for_groth16>"
     }
 
