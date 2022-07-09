@@ -157,8 +157,13 @@ class Web3Blockchain(ZkayBlockchainInterface):
         return vf
 
     def _connect_libraries(self):
-        if not cfg.blockchain_pki_address:
-            raise BlockChainError('Must specify pki address in config.')
+        if not cfg.blockchain_pki_addresses:
+            raise BlockChainError('Must specify pki addresses in config.')
+
+        pki_addresses = {}
+        for key_value in cfg.blockchain_pki_addresses.split(','):
+            key, value = key_value.split('=')
+            pki_addresses[key] = value
 
         lib_addresses = []
         if cfg.external_crypto_lib_names:
@@ -169,10 +174,14 @@ class Web3Blockchain(ZkayBlockchainInterface):
 
         with cfg.library_compilation_environment():
             with tempfile.TemporaryDirectory() as tmpdir:
+                self._pki_contract = {}
                 for crypto_params in cfg.all_crypto_params():
                     contract_name = cfg.get_pki_contract_name(crypto_params)
                     pki_sol = save_to_file(tmpdir, f'{contract_name}.sol', library_contracts.get_pki_contract(crypto_params))
-                    self._pki_contract = self._verify_contract_integrity(cfg.blockchain_pki_address, pki_sol, contract_name=contract_name)
+                    backend_name = crypto_params.crypto_name
+                    if backend_name not in pki_addresses:
+                        raise BlockChainError(f'Address for expected pki backend {backend_name} is not configured')
+                    self._pki_contract[backend_name] = self._verify_contract_integrity(pki_addresses[backend_name], pki_sol, contract_name=contract_name)
 
                 verify_sol = save_to_file(tmpdir, 'verify_libs.sol', library_contracts.get_verify_libs_code())
                 self._lib_addresses = {}

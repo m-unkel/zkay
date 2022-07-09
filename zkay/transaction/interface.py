@@ -53,7 +53,7 @@ class ZkayBlockchainInterface(metaclass=ABCMeta):
 
     It automatically ensures that all needed library contracts are accessible.
     For most backends (except eth-tester), the necessary library contracts must be deployed in advance and \
-    cfg.blockchain_pki_address or cfg.blockchain_crypto_lib_address must be specified.
+    cfg.blockchain_pki_addresses or cfg.blockchain_crypto_lib_address must be specified.
 
     For safety reasons, zkay always verifies the integrity of remote contracts by comparing the evm bytecode \
     from the blockchain with the output obtained via local compilation of the corresponding source files.
